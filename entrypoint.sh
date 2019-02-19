@@ -41,17 +41,17 @@ create_tag() {
     '{tag: $TAG, message: $MESSAGE, object: $OBJECT, type: "commit"}'
   )
 
-  curl -sSL \
+  tag_sha=$(curl -sSL \
     -H "Content-Type: application/json" \
     -H "${AUTH_HEADER}" \
     -H "${API_HEADER}" \
     -X "POST" \
     -d "${data}" \
-    "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/tags"
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/tags" | jq .sha)
   
   data=$(jq -n \
     --arg REF "refs/tags/pr-${number}" \
-    --arg OBJECT "${merge_commit_sha}" \
+    --arg OBJECT "${tag_sha}" \
     '{ref: $REF, sha: $OBJECT}'
   )
   
