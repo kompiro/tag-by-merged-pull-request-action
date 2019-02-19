@@ -7,6 +7,11 @@ if [[ -z "$GITHUB_TOKEN" ]]; then
 fi
 
 if [[ -z "$GITHUB_EVENT_NAME" ]]; then
+  echo "Set the GITHUB_EVENT_NAME env variable."
+  exit 1
+fi
+
+if [[ -z "$GITHUB_REPOSITORY" ]]; then
   echo "Set the GITHUB_REPOSITORY env variable."
   exit 1
 fi
@@ -40,7 +45,7 @@ create_tag() {
     -H "Content-Type: application/json" \
     -H "${AUTH_HEADER}" \
     -H "${API_HEADER}" \
-    -X $1 \
+    -X "POST" \
     -d "${data}" \
     "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/tags"
 }
