@@ -50,9 +50,9 @@ create_tag() {
     "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/tags"
   
   data=$(jq -n \
-    --arg REFS "refs/heads/pr-${number}" \
+    --arg REF "refs/tags/pr-${number}" \
     --arg OBJECT "${merge_commit_sha}" \
-    '{refs: $REFS, sha: $OBJECT}'
+    '{ref: $REF, sha: $OBJECT}'
   )
   
   curl -sSL \
