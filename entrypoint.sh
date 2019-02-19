@@ -35,7 +35,7 @@ merged_by=$(jq --raw-output .pull_request.merged_by.login "$GITHUB_EVENT_PATH")
 create_tag() {
   message="#${number} ${title} by @${author} merged by @${merged_by}"
   data=$(jq -n \
-    --arg TAG "pr-${number}" \
+    --arg TAG "${GITHUB_REPOSITORY}/pr-${number}" \
     --arg MESSAGE "${message}" \
     --arg OBJECT "${merge_commit_sha}" \
     '{tag: $TAG, message: $MESSAGE, object: $OBJECT, type: "commit"}'
@@ -50,7 +50,7 @@ create_tag() {
     "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/tags" | jq --raw-output .sha)
 
   data=$(jq -n \
-    --arg REF "refs/tags/pr-${number}" \
+    --arg REF "refs/tags/${GITHUB_REPOSITORY}/pr-${number}" \
     --arg OBJECT "${tag_sha}" \
     '{ref: $REF, sha: $OBJECT}'
   )
