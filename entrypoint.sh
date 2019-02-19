@@ -48,6 +48,20 @@ create_tag() {
     -X "POST" \
     -d "${data}" \
     "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/tags"
+  
+  data=$(jq -n \
+    --arg REFS "refs/heads/pr-${number}" \
+    --arg OBJECT "${merge_commit_sha}" \
+    '{refs: $REFS, sha: $OBJECT}'
+  )
+  
+  curl -sSL \
+    -H "Content-Type: application/json" \
+    -H "${AUTH_HEADER}" \
+    -H "${API_HEADER}" \
+    -X "POST" \
+    -d "${data}" \
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs"
 }
 
 if [[ "$action" == "closed" && "$merged" == "true" ]]; then
