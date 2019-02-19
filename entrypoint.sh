@@ -47,21 +47,21 @@ create_tag() {
     -H "${API_HEADER}" \
     -X "POST" \
     -d "${data}" \
-    "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/tags" | jq .sha)
-  
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/tags" | jq --raw-output .sha)
+
   data=$(jq -n \
     --arg REF "refs/tags/pr-${number}" \
     --arg OBJECT "${tag_sha}" \
     '{ref: $REF, sha: $OBJECT}'
   )
-  
+
   curl -sSL \
     -H "Content-Type: application/json" \
     -H "${AUTH_HEADER}" \
     -H "${API_HEADER}" \
     -X "POST" \
     -d "${data}" \
-    "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs"
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs" > /dev/null
 }
 
 if [[ "$action" == "closed" && "$merged" == "true" ]]; then
